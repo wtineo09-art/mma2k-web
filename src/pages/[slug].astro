@@ -1,22 +1,25 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 
-export const prerender = false; // Esto permite que busque en WP cada vez que alguien entra
+export const prerender = false;
 
 const { slug } = Astro.params;
 
-// 1. CONEXIÓN CON LA API DE WORDPRESS
-const url = `https://mma2k.com/wp-json/wp/v2/posts?slug=${slug}&_embed`;
-const response = await fetch(url);
-const posts = await response.json();
-const post = posts[0];
+let post = null;
 
-// 2. CONTROL DE ERRORES (Si no hay nada, no muestra pantalla blanca)
-if (!post) {
-  return Astro.redirect('/404');
+try {
+    const response = await fetch(`https://mma2k.com/wp-json/wp/v2/posts?slug=${slug}&_embed`);
+    const posts = await response.json();
+    post = posts[0];
+} catch (error) {
+    console.error("Error conectando con WordPress:", error);
 }
 
-// Extraemos la imagen destacada de forma segura
+// Si no hay post tras el intento, mandamos al 404
+if (!post) {
+    return Astro.redirect('/404');
+}
+
 const image = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
 ---
 
@@ -42,7 +45,6 @@ const image = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
 </MainLayout>
 
 <style is:global>
-    /* Estilos para que el texto de WordPress se vea bien en Astro */
     .wp-content p { margin-bottom: 2rem; line-height: 1.8; }
     .wp-content h2 { color: white; font-size: 2.5rem; font-weight: 900; margin-top: 3rem; text-transform: uppercase; font-style: italic; }
     .wp-content img { border-radius: 1.5rem; margin: 2rem 0; width: 100%; height: auto; }
