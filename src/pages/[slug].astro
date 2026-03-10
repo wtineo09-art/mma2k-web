@@ -1,0 +1,67 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+
+// 1. Obtenemos el "slug" de la URL
+const { slug } = Astro.params;
+
+// 2. Buscamos ese post específico en tu WordPress
+const WP_URL = `https://mma2k.com/wp-json/wp/v2/posts?slug=${slug}&_embed`;
+const response = await fetch(WP_URL);
+const posts = await response.json();
+const post = posts[0];
+
+// Si no encuentra el post, enviamos a 404
+if (!post) {
+  return Astro.redirect('/404');
+}
+---
+
+<MainLayout title={post.title.rendered}>
+    <article class="max-w-4xl mx-auto px-6 py-20">
+        
+        <header class="mb-12 space-y-6 text-center">
+            <p class="text-red-600 font-black text-xs uppercase tracking-[0.3em] italic">
+                {new Date(post.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}
+            </p>
+            <h1 class="text-5xl md:text-7xl font-black uppercase italic tracking-tighter leading-[0.9] italic" set:html={post.title.rendered} />
+        </header>
+
+        {post._embedded?.['wp:featuredmedia'] && (
+            <div class="rounded-[3rem] overflow-hidden mb-16 border border-white/10 shadow-2xl">
+                <img 
+                    src={post._embedded['wp:featuredmedia'][0].source_url} 
+                    class="w-full h-auto" 
+                    alt={post.title.rendered}
+                />
+            </div>
+        )}
+
+        <div class="prose prose-invert prose-red max-w-none text-gray-300 text-lg leading-relaxed font-medium italic space-y-8">
+            <div class="wp-content" set:html={post.content.rendered} />
+        </div>
+
+        <footer class="mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center font-black italic">2K</div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-gray-500 italic">Redacción MMA2K</p>
+            </div>
+            <button onclick="window.history.back()" class="text-[10px] font-black uppercase tracking-widest border border-white/10 px-8 py-3 hover:bg-white hover:text-black transition-all italic">
+                ← VOLVER ATRÁS
+            </button>
+        </footer>
+    </article>
+</MainLayout>
+
+<style is:global>
+    /* Estilos para que el contenido que viene de WordPress no se vea feo */
+    .wp-content p { margin-bottom: 1.5rem; }
+    .wp-content img { border-radius: 1.5rem; margin: 2rem 0; border: 1px solid rgba(255,255,255,0.1); }
+    .wp-content h2, .wp-content h3 { 
+        color: white; 
+        text-transform: uppercase; 
+        font-weight: 900; 
+        font-style: italic;
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+    }
+</style>
