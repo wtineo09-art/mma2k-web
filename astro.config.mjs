@@ -4,7 +4,7 @@ import vercel from '@astrojs/vercel/serverless';
 
 export default defineConfig({
   integrations: [tailwind()],
-  output: 'server',
+  output: 'server', // Habilita el modo dinámico para WordPress
   adapter: vercel({
     edgeMiddleware: true
   }),
