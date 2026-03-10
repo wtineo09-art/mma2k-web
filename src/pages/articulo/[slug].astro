@@ -1,0 +1,68 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+
+// 1. FORZAMOS MODO SERVIDOR (Para que Vercel busque en WP al instante)
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+// 2. CONEXIÓN A TU WORDPRESS
+// Buscamos el post específico usando el "slug" (la parte final de la URL)
+const response = await fetch(`https://mma2k.com/wp-json/wp/v2/posts?slug=${slug}&_embed`);
+const posts = await response.json();
+const post = posts[0];
+
+// Si el post no existe en WordPress, mandamos a 404
+if (!post) {
+  return Astro.redirect('/404');
+}
+
+// Extraemos la imagen destacada si existe
+const imagenDestacada = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=1200";
+---
+
+<MainLayout title={post.title.rendered}>
+    <article class="max-w-4xl mx-auto px-6 py-20">
+        
+        <header class="mb-16 space-y-6">
+            <div class="flex items-center gap-4">
+                <span class="bg-red-600 text-[10px] font-black px-3 py-1 uppercase italic tracking-widest italic">Official Feed</span>
+                <p class="text-gray-500 font-bold text-[10px] uppercase italic">
+                    {new Date(post.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}
+                </p>
+            </div>
+            <h1 class="text-5xl md:text-8xl font-black uppercase italic tracking-tighter leading-[0.85] italic" set:html={post.title.rendered} />
+        </header>
+
+        <div class="rounded-[3rem] overflow-hidden mb-20 border border-white/10 shadow-[0_0_50px_rgba(255,0,0,0.1)]">
+            <img src={imagenDestacada} class="w-full h-auto object-cover" alt={post.title.rendered} />
+        </div>
+
+        <div class="prose prose-invert max-w-none text-gray-300 text-xl leading-relaxed italic space-y-8 wp-content" set:html={post.content.rendered} />
+
+        <div class="mt-32 pt-12 border-t border-white/5">
+            <a href="/noticias" class="bg-[#111] hover:bg-white hover:text-black text-white px-10 py-5 rounded-full font-black uppercase text-[10px] tracking-widest transition-all italic shadow-2xl">
+                ← VOLVER A NOTICIAS
+            </a>
+        </div>
+
+    </article>
+</MainLayout>
+
+<style is:global>
+    /* Estilos para que el contenido de WP no se vea como un blog viejo */
+    .wp-content p { margin-bottom: 2rem; }
+    .wp-content img { border-radius: 2rem; margin: 3rem 0; border: 1px solid rgba(255,255,255,0.1); }
+    .wp-content h2, .wp-content h3 { 
+        color: white; 
+        text-transform: uppercase; 
+        font-weight: 900; 
+        font-style: italic;
+        font-size: 2rem;
+        margin-top: 4rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.05em;
+    }
+    .wp-content a { color: #dc2626; font-weight: 800; text-decoration: none; }
+    .wp-content a:hover { text-decoration: underline; }
+</style>
