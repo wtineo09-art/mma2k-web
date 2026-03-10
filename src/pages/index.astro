@@ -9,12 +9,16 @@ const noticias = await response.json();
     <main class="max-w-7xl mx-auto py-20 px-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
             {noticias.map((post) => (
-                <a href={`/${post.slug}`} class="group block">
-                    <div class="aspect-video overflow-hidden rounded-3xl mb-4 bg-gray-900">
-                        <img src={post._embedded?.['wp:featuredmedia']?.[0].source_url} class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                    </div>
-                    <h2 class="text-3xl font-black uppercase italic text-white group-hover:text-red-600 italic" set:html={post.title.rendered} />
-                </a>
+                <article class="group">
+                    <a href={"/" + post.slug} class="block">
+                        <div class="aspect-video overflow-hidden rounded-3xl mb-4 bg-gray-900">
+                            {post._embedded?.['wp:featuredmedia']?.[0].source_url && (
+                                <img src={post._embedded['wp:featuredmedia'][0].source_url} class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                            )}
+                        </div>
+                        <h2 class="text-3xl font-black uppercase italic text-white group-hover:text-red-600" set:html={post.title.rendered} />
+                    </a>
+                </article>
             ))}
         </div>
     </main>
