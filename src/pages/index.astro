@@ -1,190 +1,91 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 
-// 1. NOTICIAS SUPERIORES (FIGHTFUL STYLE)
-const destacadas = [
-    { titulo: "CM PUNK'S LOUD, DISRESPECTFUL APOLOGY | IN THE WEEDS", fecha: "MARZO 10, 2026", img: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800", color: "border-green-500" },
-    { titulo: "WOMEN'S NO. 1 CONTENDER IC TITLE GAUNTLET ON WWE RAW", fecha: "MARZO 10, 2026", img: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=800", color: "border-blue-500" },
-    { titulo: "CODY REGAINS WRESTLEMANIA | IN THE WEEDS 3/10/26", fecha: "MARZO 9, 2026", img: "https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=800", color: "border-purple-500" }
-];
+// 1. LA CONEXIÓN: Traemos los últimos 6 posts para repartirlos en la Home
+const WP_URL = "https://mma2k.com/wp-json/wp/v2/posts?_embed&per_page=6";
 
-// 2. BLOQUE PRINCIPAL
-const principal = {
-    categoria: "UFC 326",
-    titulo: "DEBUT DE ENSUEÑO",
-    descripcion: "ALBERTO MONTES FINALIZÓ EN UFC 326 Y TIENE CLAROS SUS PRÓXIMOS OBJETIVOS",
-    img: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=1200"
-};
+const response = await fetch(WP_URL);
+const noticiasWP = await response.json();
 
-// 3. TOP STORIES
-const topStories = [
-    { id: 1, liga: "ZUFFA BOXING 04", titulo: "JAI OPETAIA ES CAMPEÓN CRUCERO" },
-    { id: 2, liga: "UFC 326", titulo: "VIDEO: ANACONDA CHOKE DE ALBERTO MONTES" },
-    { id: 3, liga: "UFC 326", titulo: "RAÚL ROSAS: TRABAJO DURO Y VICTORIA" },
-    { id: 4, liga: "UFC 326", titulo: "VIDEO: KO DE GREGORY RODRIGUES" },
-    { id: 5, liga: "UFC 326", titulo: "VIDEO: DREW DOBER NOQUEA A MICHAEL JOHNSON" },
-];
-
-// 4. DATOS DEL EVENTO (PARA SECCIÓN EN LA MIRA)
-const eventoProximo = {
-    nombre: "UFC 310: Pantoja vs. Asakura",
-    lugar: "T-Mobile Arena, Las Vegas",
-    peleas: [
-        { roja: "Rakhmonov", azul: "Machado Garry", peso: "Welterweight" },
-        { roja: "Gane", azul: "Volkov", peso: "Heavyweight" },
-        { roja: "Evloev", azul: "Sterling", peso: "Featherweight" }
-    ]
-};
+// 2. REPARTIMOS: Los primeros 3 van al Hero (cabecera), los siguientes al Top Stories
+const heroPosts = noticiasWP.slice(0, 3);
+const sidePosts = noticiasWP.slice(3, 6);
+const mainFeatured = noticiasWP[0]; // El más reciente de todos para el bloque grande
 ---
 
-<MainLayout title="MMA2K | Portal de Combate">
+<MainLayout title="The Fight Portal | Home">
     
-    <section class="grid grid-cols-1 md:grid-cols-3 w-full bg-black">
-        {destacadas.map((news) => (
-            <div class={`relative h-[280px] border-b-4 ${news.color} group cursor-pointer overflow-hidden`}>
-                <img src={news.img} class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-110 transition-all duration-700" />
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                <div class="absolute bottom-0 p-6">
-                    <p class="text-[9px] font-black text-red-600 mb-2 uppercase tracking-widest italic">{news.fecha}</p>
-                    <h2 class="text-xl font-black leading-none uppercase italic tracking-tighter group-hover:text-red-500 transition-colors">{news.titulo}</h2>
+    <section class="grid grid-cols-1 md:grid-cols-3 w-full bg-black border-b border-white/10">
+        {heroPosts.map((post, index) => (
+            <div class={`relative h-[350px] border-b-4 ${index === 0 ? 'border-red-600' : 'border-gray-800'} group cursor-pointer overflow-hidden`}>
+                <img 
+                    src={post._embedded['wp:featuredmedia'] ? post._embedded['wp:featuredmedia'][0].source_url : "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800"} 
+                    class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-110 transition-all duration-1000 group-hover:opacity-60" 
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+                <div class="absolute bottom-0 p-8">
+                    <p class="text-[10px] font-black text-red-600 mb-2 uppercase italic tracking-widest">
+                        {new Date(post.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
+                    </p>
+                    <h2 class="text-2xl font-black leading-[0.9] uppercase italic tracking-tighter group-hover:text-red-500 transition-colors" set:html={post.title.rendered} />
                 </div>
             </div>
         ))}
     </section>
 
-    <main class="max-w-7xl mx-auto px-6 py-12 space-y-20">
-
+    <main class="max-w-7xl mx-auto px-6 py-20 space-y-32">
+        
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-0 bg-white text-black overflow-hidden shadow-2xl rounded-sm">
-            <div class="lg:col-span-8 relative flex flex-col bg-gray-100 border-r border-gray-200">
-                <div class="h-[500px] overflow-hidden">
-                    <img src={principal.img} class="w-full h-full object-cover" />
-                </div>
-                <div class="p-10 bg-white md:-mt-24 md:ml-10 md:mb-10 relative z-10 shadow-2xl max-w-2xl border-l-[10px] border-red-600">
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 font-black">{principal.categoria}</p>
-                    <h2 class="text-6xl font-black uppercase italic leading-[0.85] mb-6 tracking-tighter">{principal.titulo}</h2>
-                    <p class="text-gray-600 text-sm font-bold uppercase mb-8 leading-relaxed italic">{principal.descripcion}</p>
-                    <div class="flex gap-4">
-                        <button class="bg-[#1a1a1a] text-white px-8 py-4 text-[10px] font-black uppercase tracking-widest hover:bg-red-600 transition-colors italic">Leer más</button>
-                        <button class="border-2 border-black text-black px-8 py-4 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors italic">Ver Video</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-4 bg-[#111] text-white p-8">
-                <h3 class="text-3xl font-black uppercase italic tracking-tighter mb-10 border-b-2 border-red-600 pb-4">TOP <span class="text-red-600">STORIES</span></h3>
-                <div class="space-y-6">
-                    {topStories.map((story) => (
-                        <div class="group cursor-pointer flex items-center gap-6 border-b border-white/5 pb-6 last:border-0 hover:bg-white/5 transition-all p-2">
-                            <div class="bg-red-600 text-white w-14 h-14 flex items-center justify-center text-3xl font-black italic shrink-0 group-hover:scale-110 transition-transform">{story.id}</div>
-                            <div>
-                                <p class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1 italic">{story.liga}</p>
-                                <h4 class={`text-lg font-black leading-tight uppercase tracking-tighter transition-colors ${story.id === 1 ? 'text-[#ff5c3d]' : 'text-white group-hover:text-red-500'}`}>{story.titulo}</h4>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-
-        <section class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            <div class="lg:col-span-8 space-y-10">
-                <h3 class="text-3xl font-black uppercase italic tracking-tighter border-l-4 border-red-600 pl-4">Más <span class="text-red-600">Noticias</span></h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {[1, 2, 3, 4].map((n) => (
-                        <article class="group cursor-pointer border-b border-white/5 pb-8">
-                            <div class="aspect-video rounded-xl overflow-hidden mb-4 bg-white/5">
-                                <img src="https://images.unsplash.com/photo-1552072092-7f9b8d63efcb?q=80&w=600" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-                            </div>
-                            <p class="text-[9px] font-black text-red-600 uppercase mb-2">MMA2K • Hace 2 horas</p>
-                            <h4 class="text-xl font-black uppercase italic leading-none group-hover:text-red-500 transition-all italic">Análisis profundo del próximo evento estelar</h4>
-                        </article>
-                    ))}
-                </div>
-            </div>
-
-            <aside class="lg:col-span-4 space-y-8">
-                <div class="bg-[#111] p-8 rounded-[2rem] border border-white/5">
-                    <h3 class="text-xl font-black uppercase italic mb-8 tracking-widest">Únete a la <span class="text-red-600">Jaula</span></h3>
-                    <div class="space-y-4">
-                        <a href="#" class="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-red-600 transition-all group">
-                            <span class="font-black italic uppercase text-xs">Instagram</span>
-                            <span class="text-[10px] font-black opacity-40 group-hover:opacity-100">85K Followers</span>
-                        </a>
-                        <a href="#" class="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-[#FF0000] transition-all group">
-                            <span class="font-black italic uppercase text-xs">YouTube</span>
-                            <span class="text-[10px] font-black opacity-40 group-hover:opacity-100">150K Subs</span>
-                        </a>
-                    </div>
-                </div>
-            </aside>
-        </section>
-
-        <section class="bg-[#0f0f0f] rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl relative">
-            <div class="bg-red-600 p-4 text-center">
-                <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-white animate-pulse">PRÓXIMO EVENTO DESTACADO</h2>
-            </div>
             
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
-                
-                <div class="lg:col-span-4 p-10 flex flex-col justify-center space-y-6 border-r border-white/5">
-                    <div>
-                        <p class="text-red-600 font-black italic uppercase tracking-widest mb-2">"THE CHINESE"</p>
-                        <h3 class="text-6xl font-black uppercase italic tracking-tighter leading-none italic">KEVIN VALLEJOS</h3>
-                    </div>
-                    <div class="flex gap-8 border-t border-white/10 pt-6">
-                        <div><p class="text-4xl font-black italic">12</p><p class="text-[9px] text-gray-500 font-black uppercase italic">KOs</p></div>
-                        <div class="border-l border-red-600 pl-8">
-                            <p class="text-4xl font-black italic">2</p><p class="text-[9px] text-gray-500 font-black uppercase italic">SUBS</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-400 text-xs font-medium leading-relaxed uppercase italic">Peleador con mayor proyección en el peso pluma actual. Buscará la victoria final en el octágono de Las Vegas.</p>
+            <div class="lg:col-span-8 relative flex flex-col bg-gray-100">
+                <div class="h-[550px] overflow-hidden">
+                    <img 
+                        src={mainFeatured._embedded['wp:featuredmedia'] ? mainFeatured._embedded['wp:featuredmedia'][0].source_url : "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=1200"} 
+                        class="w-full h-full object-cover" 
+                    />
                 </div>
-
-                <div class="lg:col-span-4 relative group">
-                    <img src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=800" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                    <div class="absolute bottom-0 inset-x-0 p-8 text-center">
-                        <p class="text-red-500 font-black text-xs uppercase tracking-widest mb-1 italic">CARTELERA PRINCIPAL</p>
-                        <h4 class="text-2xl font-black uppercase italic tracking-tighter text-white">{eventoProximo.nombre}</h4>
-                        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{eventoProximo.lugar}</p>
-                    </div>
+                <div class="p-10 bg-white md:-mt-32 md:ml-12 md:mb-12 relative z-10 shadow-2xl max-w-2xl border-l-[15px] border-red-600">
+                    <h2 class="text-6xl font-black uppercase italic leading-[0.85] mb-6 tracking-tighter" set:html={mainFeatured.title.rendered} />
+                    <div class="text-gray-600 text-sm font-bold uppercase mb-8 italic leading-relaxed line-clamp-3" set:html={mainFeatured.excerpt.rendered} />
+                    <a href={`/post/${mainFeatured.slug}`} class="bg-black text-white px-10 py-5 text-[11px] font-black uppercase italic tracking-widest hover:bg-red-600 transition-all inline-block">LEER MÁS</a>
                 </div>
+            </div>
 
-                <div class="lg:col-span-4 p-10 bg-black/40 flex flex-col justify-center">
-                    <h5 class="text-sm font-black uppercase italic tracking-widest mb-8 border-b border-red-600 pb-2 inline-block">Cartelera <span class="text-red-600">Proxima</span></h5>
-                    <div class="space-y-6">
-                        {eventoProximo.peleas.map((pelea) => (
-                            <div class="flex flex-col border-b border-white/5 pb-4 last:border-0">
-                                <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-2 italic">{pelea.peso}</p>
-                                <div class="flex justify-between items-center text-xs font-black uppercase italic">
-                                    <span class="text-white">{pelea.roja}</span>
-                                    <span class="text-red-600 text-[10px]">VS</span>
-                                    <span class="text-white">{pelea.azul}</span>
-                                </div>
+            <div class="lg:col-span-4 bg-[#0a0a0a] text-white p-12">
+                <h3 class="text-3xl font-black uppercase italic tracking-tighter mb-16 border-b-2 border-red-600 pb-4">MÁS <span class="text-red-600">NOTICIAS</span></h3>
+                <div class="space-y-12">
+                    {sidePosts.map((s, index) => (
+                        <a href={`/post/${s.slug}`} class="group flex items-start gap-6 cursor-pointer block">
+                            <div class="bg-red-600 w-12 h-12 flex items-center justify-center text-2xl font-black italic shrink-0 group-hover:scale-110 transition-all">
+                                {index + 4}
                             </div>
-                        ))}
-                    </div>
-                    <button class="mt-10 w-full bg-white text-black py-4 text-[10px] font-black uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all italic">Ver Cartelera Completa</button>
+                            <div>
+                                <p class="text-[9px] font-black text-gray-500 uppercase italic tracking-widest mb-1">ÚLTIMA HORA</p>
+                                <h4 class="text-lg font-black uppercase tracking-tighter italic leading-none group-hover:text-red-500 transition-colors" set:html={s.title.rendered} />
+                            </div>
+                        </a>
+                    ))}
                 </div>
             </div>
         </section>
 
-        <section class="space-y-8">
-            <div class="flex justify-between items-end border-b border-white/10 pb-4">
-                <h3 class="text-4xl font-black uppercase italic tracking-tighter">MMA2K <span class="text-red-600">TV</span></h3>
+        <section class="space-y-12">
+            <div class="flex justify-between items-end">
+                <h3 class="text-5xl font-black uppercase italic tracking-tighter">MMA2K <span class="text-red-600">TV</span></h3>
+                <a href="#" class="text-[10px] font-black border-b border-red-600 pb-1 italic uppercase tracking-widest">Ver todos los videos</a>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {[1, 2, 3].map((v) => (
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                {[1, 2, 3].map(() => (
                     <div class="group cursor-pointer">
-                        <div class="relative aspect-video rounded-2xl overflow-hidden mb-4 border border-white/5">
-                            <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-700 brightness-75" />
+                        <div class="relative aspect-video rounded-[2.5rem] overflow-hidden border border-white/5 mb-6">
+                            <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600" class="w-full h-full object-cover brightness-50 group-hover:scale-110 transition-all duration-1000" />
                             <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="w-14 h-14 bg-red-600 rounded-full flex items-center justify-center shadow-2xl transform group-hover:scale-125 transition-all">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-2xl group-hover:scale-125 transition-all">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                                 </div>
                             </div>
                         </div>
-                        <h4 class="text-lg font-black uppercase italic leading-tight group-hover:text-red-500 transition-colors italic">Entrevista Exclusiva: El camino al título</h4>
+                        <h4 class="text-xl font-black uppercase italic tracking-tighter group-hover:text-red-500 italic">HIGHLIGHTS: LOS MEJORES KOS DE LA SEMANA</h4>
                     </div>
                 ))}
             </div>
