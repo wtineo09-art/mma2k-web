@@ -1,6 +1,7 @@
 ---
+import MainLayout from '../layouts/MainLayout.astro';
+
 export const prerender = false;
-import MainLayout from '../layouts/MainLayout.astro'; // Solo dos puntos ahora que salió de la carpeta
 
 const { slug } = Astro.params;
 
@@ -15,12 +16,11 @@ if (!post) {
 
 <MainLayout title={post.title.rendered}>
     <article class="max-w-4xl mx-auto px-6 py-20">
-        
-        <header class="mb-16 space-y-6">
-            <p class="text-red-600 font-black text-xs uppercase italic tracking-widest italic">
-                {new Date(post.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}
+        <header class="mb-16 space-y-6 text-center">
+            <h1 class="text-6xl md:text-8xl font-black uppercase italic tracking-tighter leading-none" set:html={post.title.rendered} />
+            <p class="text-red-600 font-black italic uppercase tracking-widest">
+                {new Date(post.date).toLocaleDateString()}
             </p>
-            <h1 class="text-5xl md:text-8xl font-black uppercase italic tracking-tighter leading-[0.85] italic" set:html={post.title.rendered} />
         </header>
 
         {post._embedded?.['wp:featuredmedia'] && (
@@ -29,18 +29,11 @@ if (!post) {
             </div>
         )}
 
-        <div class="prose prose-invert max-w-none text-gray-300 text-xl leading-relaxed italic space-y-8 wp-content" set:html={post.content.rendered} />
-
-        <div class="mt-32 pt-12 border-t border-white/5">
-            <a href="/noticias" class="bg-red-600 text-white px-10 py-5 rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-white hover:text-black transition-all italic">
-                ← VOLVER A NOTICIAS
-            </a>
-        </div>
+        <div class="prose prose-invert max-w-none text-gray-300 text-xl italic leading-relaxed wp-content" set:html={post.content.rendered} />
     </article>
 </MainLayout>
 
 <style is:global>
     .wp-content p { margin-bottom: 2rem; }
     .wp-content img { border-radius: 2rem; margin: 3rem 0; border: 1px solid rgba(255,255,255,0.1); }
-    .wp-content h2, .wp-content h3 { color: white; text-transform: uppercase; font-weight: 900; font-style: italic; margin-top: 4rem; }
 </style>
