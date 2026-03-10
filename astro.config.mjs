@@ -4,6 +4,8 @@ import vercel from '@astrojs/vercel/serverless';
 
 export default defineConfig({
   integrations: [tailwind()],
-  output: 'server', // Esto activa el modo dinámico
-  adapter: vercel(),
+  output: 'server',
+  adapter: vercel({
+    edgeMiddleware: true
+  }),
 });
