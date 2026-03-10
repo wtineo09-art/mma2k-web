@@ -1,8 +1,4 @@
 {
-  "routes": [
-    {
-      "src": "/articulo/(.*)",
-      "dest": "/articulo/[slug].astro"
-    }
-  ]
+  "cleanUrls": true,
+  "framework": "astro"
 }
