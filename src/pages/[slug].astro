@@ -5,35 +5,37 @@ export const prerender = false;
 
 const { slug } = Astro.params;
 
+// Intentamos buscar el post en WordPress
 const response = await fetch(`https://mma2k.com/wp-json/wp/v2/posts?slug=${slug}&_embed`);
 const posts = await response.json();
 const post = posts[0];
 
+// Si no hay post, mandamos al 404 de Astro
 if (!post) {
   return Astro.redirect('/404');
 }
 ---
 
 <MainLayout title={post.title.rendered}>
-    <article class="max-w-4xl mx-auto px-6 py-20">
-        <header class="mb-16 space-y-6 text-center">
-            <h1 class="text-6xl md:text-8xl font-black uppercase italic tracking-tighter leading-none" set:html={post.title.rendered} />
-            <p class="text-red-600 font-black italic uppercase tracking-widest">
-                {new Date(post.date).toLocaleDateString()}
-            </p>
+    <main class="max-w-4xl mx-auto px-6 py-20">
+        <header class="mb-12">
+            <h1 class="text-6xl font-black uppercase italic tracking-tighter" set:html={post.title.rendered} />
+            <p class="text-red-600 mt-4 font-bold uppercase italic">{new Date(post.date).toLocaleDateString()}</p>
         </header>
 
         {post._embedded?.['wp:featuredmedia'] && (
-            <div class="rounded-[3rem] overflow-hidden mb-20 border border-white/10 shadow-2xl">
-                <img src={post._embedded['wp:featuredmedia'][0].source_url} class="w-full h-auto" />
-            </div>
+            <img 
+                src={post._embedded['wp:featuredmedia'][0].source_url} 
+                class="w-full rounded-[2rem] mb-12 shadow-2xl" 
+                alt=""
+            />
         )}
 
-        <div class="prose prose-invert max-w-none text-gray-300 text-xl italic leading-relaxed wp-content" set:html={post.content.rendered} />
-    </article>
+        <div class="prose prose-invert max-w-none text-gray-300 text-xl italic wp-content" set:html={post.content.rendered} />
+    </main>
 </MainLayout>
 
 <style is:global>
-    .wp-content p { margin-bottom: 2rem; }
-    .wp-content img { border-radius: 2rem; margin: 3rem 0; border: 1px solid rgba(255,255,255,0.1); }
+    .wp-content p { margin-bottom: 1.5rem; }
+    .wp-content img { border-radius: 1.5rem; margin: 2rem 0; }
 </style>
