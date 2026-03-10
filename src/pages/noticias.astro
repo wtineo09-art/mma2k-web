@@ -1,0 +1,80 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+// Simulamos un listado de noticias (esto luego vendrá de tu base de datos)
+const todasLasNoticias = [
+    { id: 1, cat: "UFC", fecha: "10 Mar, 2026", titulo: "CM PUNK'S LOUD, DISRESPECTFUL APOLOGY | IN THE WEEDS", img: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600" },
+    { id: 2, cat: "WWE", fecha: "10 Mar, 2026", titulo: "WOMEN'S NO. 1 CONTENDER IC TITLE GAUNTLET ON RAW", img: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=600" },
+    { id: 3, cat: "PFL", fecha: "09 Mar, 2026", titulo: "FRANCIS NGANNOU REGRESA AL OCTÁGONO EN JUNIO", img: "https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=600" },
+    { id: 4, cat: "BOXEO", fecha: "08 Mar, 2026", titulo: "CANELO ÁLVAREZ CONFIRMA SU PRÓXIMA DEFENSA EN MAYO", img: "https://images.unsplash.com/photo-1511886929837-354d827aae26?q=80&w=600" },
+    { id: 5, cat: "UFC", fecha: "07 Mar, 2026", titulo: "DANA WHITE ANUNCIA EL REGRESO DE CONOR MCGREGOR", img: "https://images.unsplash.com/photo-1552072092-7f9b8d63efcb?q=80&w=600" },
+];
+
+const populares = [
+    "Ilia Topuria analiza su victoria",
+    "Ranking P4P: Nuevos cambios",
+    "Entrevista con Kevin Vallejos"
+];
+---
+
+<MainLayout title="Todas las Noticias | MMA2K">
+    <main class="max-w-7xl mx-auto px-6 py-16">
+        
+        <div class="mb-16 border-b-4 border-red-600 pb-8 inline-block">
+            <h1 class="text-6xl font-black uppercase italic tracking-tighter italic">FEED DE <span class="text-red-600">NOTICIAS</span></h1>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            
+            <div class="lg:col-span-8 space-y-12">
+                {todasLasNoticias.map((post) => (
+                    <article class="group flex flex-col md:flex-row gap-8 items-center border-b border-white/5 pb-12 last:border-0">
+                        <div class="w-full md:w-72 aspect-video rounded-2xl overflow-hidden shrink-0 border border-white/5">
+                            <img src={post.img} class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={post.titulo} />
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="text-red-600 font-black text-[10px] uppercase italic tracking-widest">{post.cat}</span>
+                                <span class="text-gray-600 font-bold text-[10px] uppercase italic">{post.fecha}</span>
+                            </div>
+                            <h2 class="text-2xl font-black uppercase italic leading-tight group-hover:text-red-500 transition-colors italic tracking-tighter">
+                                {post.titulo}
+                            </h2>
+                            <p class="text-gray-500 text-sm font-medium leading-relaxed italic line-clamp-2">
+                                Lee los detalles completos sobre este acontecimiento que está moviendo el mundo de los deportes de combate...
+                            </p>
+                            <a href="#" class="inline-block text-[10px] font-black uppercase tracking-widest text-white border-b border-red-600 pb-1 hover:text-red-600 transition-colors">Leer Artículo →</a>
+                        </div>
+                    </article>
+                ))}
+
+                <div class="flex gap-4 pt-10">
+                    <button class="bg-red-600 text-white px-6 py-3 font-black text-xs uppercase italic italic">1</button>
+                    <button class="bg-[#111] hover:bg-white hover:text-black text-white px-6 py-3 font-black text-xs uppercase italic italic transition-all">2</button>
+                    <button class="bg-[#111] hover:bg-white hover:text-black text-white px-6 py-3 font-black text-xs uppercase italic italic transition-all">3</button>
+                    <button class="bg-[#111] hover:bg-white hover:text-black text-white px-6 py-3 font-black text-xs uppercase italic italic transition-all">Siguiente →</button>
+                </div>
+            </div>
+
+            <aside class="lg:col-span-4 space-y-12">
+                <div class="bg-[#111] p-10 rounded-[2.5rem] border border-white/5">
+                    <h3 class="text-xl font-black uppercase italic mb-8 border-l-4 border-red-600 pl-4 italic">Lo más <span class="text-red-600">Leído</span></h3>
+                    <div class="space-y-6">
+                        {populares.map((item, index) => (
+                            <div class="flex gap-4 group cursor-pointer">
+                                <span class="text-2xl font-black italic text-gray-800 group-hover:text-red-600 transition-colors">0{index + 1}</span>
+                                <p class="text-sm font-black uppercase italic leading-tight group-hover:text-white text-gray-400 transition-all italic">{item}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div class="bg-red-600 p-8 rounded-[2.5rem] text-center shadow-2xl shadow-red-600/20">
+                    <p class="text-[10px] font-black uppercase tracking-widest mb-2 italic text-white/60 italic">Publicidad</p>
+                    <h4 class="text-2xl font-black uppercase italic mb-6 italic tracking-tighter text-white">¿BUSCAS EQUIPO DE ENTRENAMIENTO?</h4>
+                    <button class="w-full bg-black text-white py-4 rounded-xl font-black uppercase text-[10px] italic hover:bg-white hover:text-black transition-all">Visitar Tienda</button>
+                </div>
+            </aside>
+        </div>
+    </main>
+</MainLayout>

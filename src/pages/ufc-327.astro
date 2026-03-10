@@ -1,0 +1,130 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+// Datos Reales para SEO
+const evento = {
+    titulo: "UFC 326: El Regreso del Rey",
+    subtitulo: "Estelar: Ilia Topuria vs. Max Holloway 2",
+    fecha: "Sábado, 15 de Agosto, 2026",
+    lugar: "Santiago Bernabéu, Madrid, España",
+    descripcion: "UFC 326 marca un hito histórico con el primer evento numerado en territorio español. Ilia Topuria defiende su corona mundial ante la leyenda Max Holloway en una revancha que paralizará el mundo del deporte."
+};
+
+const mainCard = [
+    { pelea: "Ilia Topuria vs Max Holloway", categoria: "World Featherweight Title", info: "La pelea más esperada en la historia de España." },
+    { pelea: "Sean O'Malley vs Merab Dvalishvili", categoria: "Bantamweight Title", info: "Choque de estilos: El striking de Suga contra la presión de Merab." },
+    { pelea: "Paddy Pimblett vs Renato Moicano", categoria: "Lightweight", info: "Duelo de personalidades y grapplers de élite." }
+];
+---
+
+<MainLayout title={evento.titulo}>
+    <main class="bg-black text-white pb-20">
+        
+        <section class="relative h-[70vh] flex items-end overflow-hidden">
+            <img 
+                src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=1400" 
+                class="absolute inset-0 w-full h-full object-cover opacity-30 grayscale hover:grayscale-0 transition-all duration-1000" 
+                alt="UFC 326 Octagon"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+            
+            <div class="max-w-7xl mx-auto px-6 w-full pb-20 z-10">
+                <div class="flex gap-4 mb-6">
+                    <span class="bg-red-600 text-[10px] font-black px-4 py-1.5 rounded italic uppercase tracking-widest animate-pulse">Main Event</span>
+                    <span class="bg-white/10 backdrop-blur-md text-[10px] font-black px-4 py-1.5 rounded italic uppercase tracking-widest">UFC 326</span>
+                </div>
+                <h1 class="text-6xl md:text-9xl font-black uppercase italic tracking-tighter leading-[0.8] mb-8 italic">
+                    {evento.titulo}
+                </h1>
+                <p class="text-gray-400 font-bold uppercase tracking-[0.4em] text-sm italic border-l-4 border-red-600 pl-6">
+                    {evento.lugar} • {evento.fecha}
+                </p>
+            </div>
+        </section>
+
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 mt-20">
+            
+            <div class="lg:col-span-8 space-y-16">
+                
+                <article class="prose prose-invert max-w-none">
+                    <h2 class="text-4xl font-black uppercase italic tracking-tighter mb-8 italic">Análisis del <span class="text-red-600">Main Event</span></h2>
+                    
+                    <div class="space-y-6 text-gray-400 font-medium leading-relaxed text-lg italic">
+                        <p>
+                            La llegada de la **UFC 326** a Madrid representa no solo un evento deportivo, sino un fenómeno cultural. Con **Ilia Topuria** como el primer campeón español de la organización, la expectativa por ver su defensa titular en el icónico Santiago Bernabéu ha roto todos los récords de taquilla.
+                        </p>
+                        
+                        <div class="my-12 rounded-[2rem] overflow-hidden border border-white/10 group shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1000" class="w-full h-auto group-hover:scale-105 transition-transform duration-700" alt="Ilia Topuria Entrenando" />
+                            <p class="bg-[#111] p-4 text-[10px] font-black uppercase tracking-widest text-center text-gray-500 italic">Ilia Topuria durante su campamento en Alicante, España.</p>
+                        </div>
+
+                        <p>
+                            Por otro lado, **Max Holloway** llega con el impulso de su histórico KO sobre Justin Gaethje. El hawaiano busca recuperar el trono de las 145 libras y demostrar que su evolución técnica lo mantiene como el mejor striker de la división. Este combate es una partida de ajedrez donde el poder de Topuria chocará contra el volumen incesante de Holloway.
+                        </p>
+
+                        <h3 class="text-2xl font-black text-white uppercase italic tracking-widest mt-12 mb-6">¿Qué está en juego?</h3>
+                        <p>
+                            Además de la corona de peso pluma, este evento definirá el futuro de la división. El ganador probablemente se enfrente a Alexander Volkanovski en una trilogía o busque el estatus de doble campeón en el peso ligero. La cartelera estelar se completa con el choque entre **Sean O'Malley** y **Merab Dvalishvili**, una pelea que muchos consideran la verdadera prueba de fuego para el reinado de 'Suga'.
+                        </p>
+                    </div>
+                </article>
+
+                <section class="space-y-8">
+                    <h3 class="text-3xl font-black uppercase italic tracking-tighter border-b-2 border-red-600 pb-4 italic">Cartelera <span class="text-red-600">Estelar</span></h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        {mainCard.map(p => (
+                            <div class="bg-[#111] p-8 rounded-3xl border border-white/5 flex flex-col md:flex-row justify-between items-center group hover:bg-white/5 transition-all">
+                                <div class="text-center md:text-left mb-4 md:mb-0">
+                                    <p class="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">{p.categoria}</p>
+                                    <h4 class="text-2xl font-black uppercase italic tracking-tighter group-hover:text-red-600 transition-all italic">{p.pelea}</h4>
+                                </div>
+                                <p class="text-xs font-bold text-gray-500 max-w-[200px] text-center md:text-right italic uppercase leading-tight tracking-tighter">
+                                    {p.info}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
+            </div>
+
+            <aside class="lg:col-span-4 space-y-10">
+                
+                <div class="bg-white text-black p-10 rounded-[2.5rem] shadow-2xl">
+                    <h4 class="text-xs font-black uppercase tracking-[0.3em] mb-8 border-b-2 border-black pb-4 italic">Horarios de Inicio</h4>
+                    <div class="space-y-6">
+                        <div class="flex justify-between items-end border-b border-black/10 pb-2">
+                            <span class="text-[10px] font-black uppercase italic">Main Card RD</span>
+                            <span class="text-2xl font-black italic">10:00 PM</span>
+                        </div>
+                        <div class="flex justify-between items-end border-b border-black/10 pb-2">
+                            <span class="text-[10px] font-black uppercase italic">Prelims RD</span>
+                            <span class="text-2xl font-black italic">08:00 PM</span>
+                        </div>
+                        <div class="flex justify-between items-end border-b border-black/10 pb-2">
+                            <span class="text-[10px] font-black uppercase italic">España (CET)</span>
+                            <span class="text-2xl font-black italic">04:00 AM</span>
+                        </div>
+                    </div>
+                    <button class="w-full mt-10 bg-red-600 text-white py-4 rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-black transition-all italic">Sincronizar Calendario</button>
+                </div>
+
+                <div class="bg-[#111] p-10 rounded-[2.5rem] border border-white/5">
+                    <h4 class="text-xs font-black uppercase tracking-widest text-gray-500 mb-8 italic">Noticias Relacionadas</h4>
+                    <div class="space-y-8">
+                        <a href="#" class="block group">
+                            <p class="text-red-600 text-[9px] font-black mb-1 italic uppercase tracking-widest italic">Análisis</p>
+                            <h5 class="text-sm font-black uppercase italic leading-tight group-hover:text-white text-gray-400 transition-all italic">Topuria: "Holloway no pasará del tercer round"</h5>
+                        </a>
+                        <a href="#" class="block group">
+                            <p class="text-red-600 text-[9px] font-black mb-1 italic uppercase tracking-widest italic">Entrevista</p>
+                            <h5 class="text-sm font-black uppercase italic leading-tight group-hover:text-white text-gray-400 transition-all italic">Dana White confirma el Sold Out en el Bernabéu</h5>
+                        </a>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+    </main>
+</MainLayout>

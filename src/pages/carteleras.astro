@@ -1,0 +1,87 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+const eventos = [
+    {
+        id: "UFC310",
+        liga: "UFC",
+        evento: "Pantoja vs. Asakura",
+        fecha: "SÁBADO, 14 DE MARZO",
+        hora: "10:00 PM AST",
+        lugar: "T-Mobile Arena, Las Vegas",
+        imagen: "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=800",
+        mainCard: [
+            { pelea: "Alexandre Pantoja vs Kai Asakura", categoria: "Flyweight Title" },
+            { pelea: "Shavkat Rakhmonov vs Ian Machado Garry", categoria: "Welterweight" },
+            { pelea: "Ciryl Gane vs Alexander Volkov", categoria: "Heavyweight" }
+        ]
+    },
+    {
+        id: "PFL1",
+        liga: "PFL",
+        evento: "PFL Global Season: Miami",
+        fecha: "VIERNES, 27 DE MARZO",
+        hora: "8:00 PM AST",
+        lugar: "Kaseya Center, Miami",
+        imagen: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800",
+        mainCard: [
+            { pelea: "Larissa Pacheco vs Kayla Harrison", categoria: "Women's Featherweight" },
+            { pelea: "Patricio Pitbull vs Jesus Pinedo", categoria: "Featherweight" }
+        ]
+    }
+];
+---
+
+<MainLayout title="Próximas Carteleras">
+    <main class="max-w-7xl mx-auto px-6 py-16">
+        
+        <div class="mb-16 border-l-8 border-red-600 pl-8">
+            <h1 class="text-6xl font-black uppercase italic tracking-tighter">CALENDARIO DE <span class="text-red-600 text-red-600">COMBATES</span></h1>
+            <p class="text-gray-500 font-bold uppercase tracking-widest mt-4 italic">Cobertura total de UFC, PFL, Bellator y Boxeo</p>
+        </div>
+
+        <div class="space-y-12">
+            {eventos.map((ev) => (
+                <section class="bg-[#111] rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl group transition-all hover:border-red-600/30">
+                    <div class="grid grid-cols-1 lg:grid-cols-12">
+                        
+                        <div class="lg:col-span-4 relative h-full min-h-[300px]">
+                            <img src={ev.imagen} class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                            <div class="absolute top-6 left-6">
+                                <span class="bg-red-600 text-[10px] font-black px-4 py-2 rounded italic uppercase tracking-widest">{ev.liga}</span>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-8 p-10 md:p-12 flex flex-col justify-center">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                                <div>
+                                    <h2 class="text-4xl font-black uppercase italic tracking-tighter mb-2">{ev.evento}</h2>
+                                    <p class="text-red-600 font-black text-xs uppercase tracking-widest italic">{ev.fecha} • {ev.hora}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest italic">{ev.lugar}</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-black/40 p-8 rounded-2xl border border-white/5">
+                                {ev.mainCard.map((p) => (
+                                    <div class="border-b border-white/5 pb-3 last:border-0 md:last:border-b">
+                                        <p class="text-[8px] font-black text-gray-600 uppercase mb-1 tracking-widest">{p.categoria}</p>
+                                        <p class="text-sm font-black uppercase italic text-white">{p.pelea}</p>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div class="flex gap-4 mt-10">
+                                <button class="bg-white text-black px-8 py-3 text-[10px] font-black uppercase tracking-widest italic hover:bg-red-600 hover:text-white transition-all">Ver Análisis Previo</button>
+                                <button class="border border-white/20 text-white px-8 py-3 text-[10px] font-black uppercase tracking-widest italic hover:bg-white hover:text-black transition-all">Dónde Verlo</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            ))}
+        </div>
+
+    </main>
+</MainLayout>
