@@ -43,7 +43,7 @@ const masNoticias = noticiasWP.slice(6, 10);
                 <div class="p-10 bg-white md:-mt-32 md:ml-12 md:mb-12 relative z-10 shadow-2xl max-w-2xl border-l-[15px] border-red-600">
                     <h2 class="text-6xl font-black uppercase italic leading-[0.85] mb-6 tracking-tighter" set:html={mainFeatured.title.rendered} />
                     <div class="text-gray-600 text-sm font-bold uppercase mb-8 italic leading-relaxed line-clamp-3" set:html={mainFeatured.excerpt.rendered} />
-                    <a href={`/articulo/${post.slug}`} ...> class="bg-black text-white px-10 py-5 text-[11px] font-black uppercase italic tracking-widest hover:bg-red-600 transition-all inline-block">LEER MÁS</a>
+                    <a href={`/${post.slug}`}> class="bg-black text-white px-10 py-5 text-[11px] font-black uppercase italic tracking-widest hover:bg-red-600 transition-all inline-block">LEER MÁS</a>
                 </div>
             </div>
 

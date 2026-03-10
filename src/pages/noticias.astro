@@ -14,7 +14,7 @@ const noticias = await response.json();
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             {noticias.map((post) => (
-                <a href={`/articulo/${post.slug}`} class="group block">
+                <a href={`/${post.slug}`}>
                     <div class="aspect-video rounded-[2rem] overflow-hidden mb-6 border border-white/5 bg-[#111]">
                         <img 
                             src={post._embedded?.['wp:featuredmedia']?.[0].source_url || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800"} 
