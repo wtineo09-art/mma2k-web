@@ -1,16 +1,17 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 
-// 1. LA CONEXIÓN: Traemos los últimos 6 posts para repartirlos en la Home
-const WP_URL = "https://mma2k.com/wp-json/wp/v2/posts?_embed&per_page=6";
+// 1. TRAEMOS MÁS POSTS (10 en lugar de 6 para llenar la cuadrícula inferior)
+const WP_URL = "https://mma2k.com/wp-json/wp/v2/posts?_embed&per_page=10";
 
 const response = await fetch(WP_URL);
 const noticiasWP = await response.json();
 
-// 2. REPARTIMOS: Los primeros 3 van al Hero (cabecera), los siguientes al Top Stories
-const heroPosts = noticiasWP.slice(0, 3);
-const sidePosts = noticiasWP.slice(3, 6);
-const mainFeatured = noticiasWP[0]; // El más reciente de todos para el bloque grande
+// 2. REPARTIMOS LOS DATOS
+const heroPosts = noticiasWP.slice(0, 3);      // Los 3 de arriba
+const mainFeatured = noticiasWP[0];            // El grande del medio
+const sidePosts = noticiasWP.slice(3, 6);      // Los 3 laterales
+const masNoticias = noticiasWP.slice(6, 10);   // Los 4 de la cuadrícula inferior
 ---
 
 <MainLayout title="The Fight Portal | Home">
@@ -19,7 +20,7 @@ const mainFeatured = noticiasWP[0]; // El más reciente de todos para el bloque 
         {heroPosts.map((post, index) => (
             <div class={`relative h-[350px] border-b-4 ${index === 0 ? 'border-red-600' : 'border-gray-800'} group cursor-pointer overflow-hidden`}>
                 <img 
-                    src={post._embedded['wp:featuredmedia'] ? post._embedded['wp:featuredmedia'][0].source_url : "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800"} 
+                    src={post._embedded?.['wp:featuredmedia']?.[0].source_url || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800"} 
                     class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-110 transition-all duration-1000 group-hover:opacity-60" 
                 />
                 <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
@@ -36,13 +37,9 @@ const mainFeatured = noticiasWP[0]; // El más reciente de todos para el bloque 
     <main class="max-w-7xl mx-auto px-6 py-20 space-y-32">
         
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-0 bg-white text-black overflow-hidden shadow-2xl rounded-sm">
-            
             <div class="lg:col-span-8 relative flex flex-col bg-gray-100">
                 <div class="h-[550px] overflow-hidden">
-                    <img 
-                        src={mainFeatured._embedded['wp:featuredmedia'] ? mainFeatured._embedded['wp:featuredmedia'][0].source_url : "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=1200"} 
-                        class="w-full h-full object-cover" 
-                    />
+                    <img src={mainFeatured._embedded?.['wp:featuredmedia']?.[0].source_url || "https://images.unsplash.com/photo-1595079676339-1534801ad6cf?q=80&w=1200"} class="w-full h-full object-cover" />
                 </div>
                 <div class="p-10 bg-white md:-mt-32 md:ml-12 md:mb-12 relative z-10 shadow-2xl max-w-2xl border-l-[15px] border-red-600">
                     <h2 class="text-6xl font-black uppercase italic leading-[0.85] mb-6 tracking-tighter" set:html={mainFeatured.title.rendered} />
@@ -52,13 +49,11 @@ const mainFeatured = noticiasWP[0]; // El más reciente de todos para el bloque 
             </div>
 
             <div class="lg:col-span-4 bg-[#0a0a0a] text-white p-12">
-                <h3 class="text-3xl font-black uppercase italic tracking-tighter mb-16 border-b-2 border-red-600 pb-4">MÁS <span class="text-red-600">NOTICIAS</span></h3>
+                <h3 class="text-3xl font-black uppercase italic tracking-tighter mb-16 border-b-2 border-red-600 pb-4">TOP <span class="text-red-600">STORIES</span></h3>
                 <div class="space-y-12">
                     {sidePosts.map((s, index) => (
                         <a href={`/post/${s.slug}`} class="group flex items-start gap-6 cursor-pointer block">
-                            <div class="bg-red-600 w-12 h-12 flex items-center justify-center text-2xl font-black italic shrink-0 group-hover:scale-110 transition-all">
-                                {index + 4}
-                            </div>
+                            <div class="bg-red-600 w-12 h-12 flex items-center justify-center text-2xl font-black italic shrink-0 group-hover:scale-110 transition-all">{index + 4}</div>
                             <div>
                                 <p class="text-[9px] font-black text-gray-500 uppercase italic tracking-widest mb-1">ÚLTIMA HORA</p>
                                 <h4 class="text-lg font-black uppercase tracking-tighter italic leading-none group-hover:text-red-500 transition-colors" set:html={s.title.rendered} />
@@ -69,27 +64,34 @@ const mainFeatured = noticiasWP[0]; // El más reciente de todos para el bloque 
             </div>
         </section>
 
-        <section class="space-y-12">
-            <div class="flex justify-between items-end">
-                <h3 class="text-5xl font-black uppercase italic tracking-tighter">MMA2K <span class="text-red-600">TV</span></h3>
-                <a href="#" class="text-[10px] font-black border-b border-red-600 pb-1 italic uppercase tracking-widest">Ver todos los videos</a>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                {[1, 2, 3].map(() => (
-                    <div class="group cursor-pointer">
-                        <div class="relative aspect-video rounded-[2.5rem] overflow-hidden border border-white/5 mb-6">
-                            <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=600" class="w-full h-full object-cover brightness-50 group-hover:scale-110 transition-all duration-1000" />
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-2xl group-hover:scale-125 transition-all">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                                </div>
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+            <div class="lg:col-span-8">
+                <h3 class="text-3xl font-black uppercase italic tracking-tighter mb-10 flex items-center gap-4 italic">
+                    <span class="w-1 h-8 bg-red-600"></span> MÁS <span class="text-red-600">NOTICIAS</span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    {masNoticias.map((n) => (
+                        <a href={`/post/${n.slug}`} class="group block">
+                            <div class="aspect-video rounded-2xl overflow-hidden mb-6 border border-white/5 bg-[#111]">
+                                <img 
+                                    src={n._embedded?.['wp:featuredmedia']?.[0].source_url || "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800"} 
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700" 
+                                />
                             </div>
-                        </div>
-                        <h4 class="text-xl font-black uppercase italic tracking-tighter group-hover:text-red-500 italic">HIGHLIGHTS: LOS MEJORES KOS DE LA SEMANA</h4>
-                    </div>
-                ))}
+                            <p class="text-red-600 font-black text-[9px] uppercase italic tracking-widest mb-2">MMA2K • RECIENTE</p>
+                            <h4 class="text-xl font-black uppercase italic tracking-tighter group-hover:text-white text-gray-300 leading-tight italic" set:html={n.title.rendered} />
+                        </a>
+                    ))}
+                </div>
             </div>
-        </section>
 
-    </main>
-</MainLayout>
+            <aside class="lg:col-span-4">
+                <div class="bg-[#111] p-10 rounded-[2.5rem] border border-white/5 sticky top-32">
+                    <h3 class="text-2xl font-black uppercase italic mb-10 italic">ÚNETE A LA <span class="text-red-600">JAULA</span></h3>
+                    <div class="space-y-4">
+                        <a href="#" class="flex items-center justify-between p-6 bg-white/5 rounded-2xl hover:bg-white/10 transition-all group">
+                            <span class="text-[11px] font-black uppercase italic tracking-widest group-hover:text-red-500">INSTAGRAM</span>
+                            <span class="text-[10px] text-gray-500 font-bold">85K Followers</span>
+                        </a>
+                        <a href="#" class="flex items-center justify-between p-6 bg-white/5 rounded-2xl hover:bg-white/10 transition-all group">
+                            <span class="text-[11px] font-black uppercase italic tracking-widest group-hover
