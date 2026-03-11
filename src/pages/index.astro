@@ -21,5 +21,12 @@ const noticias = await response.json();
                 </a>
             ))}
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+    {noticias && noticias.length > 0 && noticias.map((item) => (
+        <a href={`/${item.slug}`} class="group block">
+            {/* ... resto del código ... */}
+        </a>
+    ))}
+</div>
     </main>
 </MainLayout>
